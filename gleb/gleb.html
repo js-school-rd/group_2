@@ -1,15 +1,82 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
 <head>
-    <meta charset="UTF-8">
-    <title>My Webpage</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Calculator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="gleb.css">
+    <script src="gleb.js" defer></script>
 </head>
-<body>
-    <h1 class="name">Welcome Gleb!</h1>
-    <p>This text will be styled and can be interacted with via JavaScript.</p>
 
+<body style="background-color: black">
 
-    <script src="gleb.js"></script>
+    <!-- Navigation Bar -->
+    <div style="display: flex; justify-content: center">
+        <div class="floating-nav">
+            <img class="nav-icon" src="./assets/Home.svg" alt="Home" />
+            <img class="nav-icon" src="./assets/Stats.svg" alt="Stats" />
+            <img class="nav-icon" src="./assets/Settings.svg" alt="Settings" />
+            <img onclick="openAddMenu()" class="nav-icon" src="./assets/Add.svg" alt="Add" />
+        </div>
+    </div>
+
+    <!-- Add Funds Bar -->
+    <div id="menu-add" class="floating-menu">
+        <div style="display:flex; height: 56px; border-bottom: solid; border-bottom-color: white; border-width: 1px; align-items:center">
+            <p style="font-size:16px; margin-left:16px">Incoming</p>
+        </div>
+        <div style="border: solid; border-color: #FFFFFF; border-radius: 8px; height: 60px; border-width: 1px; margin-top: 16px; margin-left: 16px; margin-right: 16px; display:flex; justify-content:space-between">
+            <input id="amount-to-add" type="number" name="Balance" value="" style="height:60px; max-width:65%" />
+            <div class="dropdown" onclick="openCurrencySelector()">
+                <p id="selected-currency" style=" font-size:24px; font-weight:700; align-self:center"></p>
+                <img src="./assets/Down.svg" alt="Down" style="width:24px; height: 24px; align-self:center" />
+            </div>
+            <div class="dropdown_menu" id="currency-selector" style="display:block">
+            </div>
+        </div>
+        <div style="display:flex; margin: 16px 16px 16px 16px; gap: 8px 8px">
+            <button onclick="closeAddMenu()" style="width: 100%; height: 44px; background-color: #00000040; border: none; border-radius: 10px; color: white; font-family: 'Manrope'; font-size: 14px; font-weight: 700">Cancel</button>
+            <button onclick="addToBalance(document.getElementById('amount-to-add').value)" style="width: 100%; height: 44px; background-color: #42DDE6CC; border: none; border-radius: 10px; color: white; font-family: 'Manrope'; font-size:14px; font-weight: 700">Add To USD</button>
+        </div>
+    </div>
+
+    <!-- MAIN INTERFACE BELOW-->
+
+    <!-- User Balance -->
+    <div style="padding: 80px 0px 0px 5px">
+        <p id="main-balance" style="font-size: 72px; font-weight: 700">$0</p>
+        <div style="display:flex; gap: 10px 10px; margin-top: 20px">
+            <p id="additional-balance" style="font-size: 14px; font-weight:700"> 0RUB</p>
+            <p style="font-size: 14px; font-weight:700">|</p>
+            <p id="additional-balance-2" style="font-size: 14px; font-weight:700"> 0KZT</p>
+        </div>
+    </div>
+
+    <!-- Type Funds to Remove and Currency Selector -->
+    <div class="expenses" style="margin-top: 40px">
+        <div style="border: solid; border-color: #FFFFFF; border-radius: 8px; height: 60px; border-width: 1px; display: flex; flex-direction: row; align-items: flex-start; align-self: stretch ">
+            <input id="amount-to-remove" type="number" name="Balance Remove" value="" style="height: 60px; width: calc(100% - 82px)" />
+            <div class="dropdown" onclick="openCurrencySelector1()">
+                <p id="selected-currency-1" style=" font-size:24px; font-weight:700; align-self:center"></p>
+                <img src="./assets/Down.svg" alt="Down" style="width:24px; height: 24px; align-self:center" />
+            </div>
+            <div class="dropdown_menu-1" id="currency-selector-1" style="display:block">
+            </div>
+        </div>
+
+        <!-- SELECT CATEGORY-->
+        <div id="category-list" class="list-cat">
+
+        </div>
+
+    </div>
+
+    <div class="transactions" id="transactions">
+
+    </div>
+
 </body>
-</html>
+</html> 
