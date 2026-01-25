@@ -1,15 +1,84 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>My Webpage</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
     <link rel="stylesheet" href="vlad.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap" rel="stylesheet">
 </head>
 <body>
-    <h1 class="name">Welcome Vlad!</h1>
-    <p>This text will be styled and can be interacted with via JavaScript.</p>
+<div class="main_content">
+    <h1 id="budget">6000$</h1>
+    <ul class="budget_convert">
+        <li class=>600 000 ₽</li>
+        <li class=>4 000 000 KZT</li>
+    </ul>
+    <div class="quick_add_block">
+        <div class="quick_add_input_block">
+            <input class="quick_add_input" placeholder="30 000" type="number">
+            <button type="button" class="currency_select">$ 
+                <img src="assets/fi-rr-angle-small-down.svg">
+            </button>
+        </div>
+        <ul class="category-select inactive-category">
+        </ul>
+    </div>
 
 
+    <template id="historyDayCostTemplate">
+    <li class="historyDayCost">
+        <div class="historyDayCostGroup">
+            <div class="costleft">
+                <p></p>
+                <img src="">
+            </div>
+        <div class="costRight">
+            <ul class="budget_convert">
+                <li class=>600 000 ₽</li>
+                <li class=>4 000 000 KZT</li>
+            </ul>
+            <p class="costAmount">400 $</p>
+        </div>
+        </div>
+    </li>
+    </template>
+
+    <template id="historyDayTemplate">
+        <li class="historyDay" data-js-history-day="">
+            <div class="historyDayGroup">
+                <div class="historyDayTitleGroup">
+                <p class="historyDayTitleDate"></p>
+                <p class="historyDayTitleSum">1540</p>
+                </div>
+                <ul class="budget_convert">
+                    <li class=>600 000 ₽</li>
+                    <li class=>4 000 000 KZT</li>
+                </ul>
+                <ul class="historyDayCostList" data-js-day-cost-list>
+                </ul>
+            </div>
+        </li>
+    </template>
+
+
+    <div>
+        <ul class="historyList" data-js-history-list>
+        </ul>
+    </div>
+    
+</div>
+<nav id="float-menu">
+    <ul class="navigation">
+        <li><a><img src="assets/menu/fi-rr-home.svg"></a></li>
+        <li><a><img src="assets/menu/fi-rr-stats.svg"></a></li>
+        <li><a><img src="assets/menu/fi-rr-settings.svg"></a></li>
+        <li><a><img src="assets/menu/fi-rr-add.svg"></a></li>
+    </ul>
+
+</nav>
     <script src="vlad.js"></script>
 </body>
 </html>
