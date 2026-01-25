@@ -1,3 +1,120 @@
-.name{
-    color: black;
+@font-face {
+  font-family: 'Manrope';
+  src: url(fonts/Manrope/Manrope-VariableFont_wght.ttf);
+}
+
+:root {
+  --bg-color: #1e1e1e;
+  --font-family: 'Manrope';
+  --font-color: white;
+  --bg-image: url(images/Vector.svg);
+  --grid-column-number: 4;
+}
+
+* {
+  box-sizing: border-box; 
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  font-family: var(--font-family);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--font-color);
+  padding: 20px 5px;
+}
+
+input {
+  background: none;
+  border-style: solid;
+  border-radius: 10px;
+  border-width: 1px;
+  border-color: #6F6F6F66;
+  font-family: inherit;
+  color: inherit;
+  font-weight: inherit;
+  outline: none;
+  max-width: 100%;
+  font-size: 40px;
+  padding: 0 16px;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.content {
+  width: 100%;
+  max-width: 500px;
+  align-self: center;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+.background {
+  position: absolute;
+  inset: 0;
+  background-color: var(--bg-color);
+  background-image: var(--bg-image);
+  background-repeat: no-repeat;
+  background-size: cover;
+  z-index: -1;
+}
+
+.budget {
+  font-size: 72px;
+}
+
+.budget-input input {
+  height: 60px;
+}
+
+.categories-wrapper {
+  display: flex;
+  flex-direction: column;
+  background-color: #032B2E66;
+  padding: 16px;
+  border-radius: 16px;
+  gap: 20px;
+}
+
+.categories {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  grid-auto-flow: row dense;
+}
+
+.category-card, .other-button {
+  display: flex;
+  flex-direction: column;
+  background-color: #0C282A66;
+  border-radius: 10px;
+  justify-content: center;
+  align-items: center;
+  gap: 7px;
+  font-size: 10px;
+  aspect-ratio: 1 / 1;
+  cursor: pointer;
+}
+
+.other-button {
+  grid-column: span var(--grid-column-number);
+  aspect-ratio: var(--grid-column-number) / 1;
+}
+
+.category-card img {
+  width: 24px;
+  height: 24px;
+}
+
+.category-card img,
+.category-card span,
+.other-button {
+  opacity: 80%;
 }

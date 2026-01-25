@@ -1,15 +1,35 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <title>My Webpage</title>
-    <link rel="stylesheet" href="fedor.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Index page</title>
+  <link rel="stylesheet" href="fedor.css">
 </head>
+
 <body>
-    <h1 class="name">Welcome Fedor!</h1>
-    <p>This text will be styled and can be interacted with via JavaScript.</p>
+  <div class="background"></div>
 
+  <div class="content">
+    <div class="budget">
+      <span></span> <!--Initial budget-->
+    </div>
 
-    <script src="fedor.js"></script>
+    <div class="categories-wrapper">
+      <div class="budget-input">
+        <input type="number" id="budget-input" min="0" placeholder="30000">
+      </div>
+
+      <div class="categories">
+        <div class="other-button">
+          <span>Other</span>
+        </div>
+      </div>
+    </div>
+  </div>
 </body>
+
+<script src="fedor.js"></script>
+
 </html>
