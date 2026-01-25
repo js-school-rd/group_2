@@ -1,3 +1,333 @@
-.name{
-    color: red;
+body {
+    background-color: #1E1E1E;
+    font-family: manrope;
+    color: #FFFFFFCC;
+    background-image: url('assets/BG\ Vector\ 1.svg');
+    background-repeat: no-repeat;
+    background-position: 20%;
+    background-size: cover;
+    position: relative;
+    margin: 0px;
+    padding: 0px;
+    width: 100%;
+    min-height: 100vh;
+    padding: 16px;
+    
 }
+
+
+p {
+    margin: 0px;
+}
+
+.main_content {
+    position: relative;
+    max-width: 400px;
+    justify-self: center;
+}
+
+#budget {
+    font-weight: bold;
+    letter-spacing: -0.09em;
+    line-height: 0%;
+    font-size: 72px;
+}
+
+.invalid-text {
+    color:#e6282884;
+    transition: 0.2s ease-in;
+}
+
+.budget_convert {
+  display: flex;
+  gap: 4px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.budget_convert li {
+    position: relative;
+    padding-right: 8px;
+    padding-left: 4px;
+    font-size: 14px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+    justify-content: center;
+    font-weight: bold;
+}
+
+.budget_convert li::after {
+    content: '';
+    position: absolute;
+    right: 0%;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 10px;
+    width: 1px;
+    background-color: #FFFFFFCC;
+}
+
+.budget_convert li:last-child::after {
+    display:none;
+}
+
+.quick_add_block {
+    position: relative;
+    background-color: #032B2E66;
+    -webkit-backdrop-filter: blur(100px);
+    backdrop-filter: blur(100px);
+    border-radius: 16px;
+    padding: 16px;
+    margin-top: 40px;
+}
+
+.quick_add_input_block {
+    display: flex;
+    border-radius: 10px;
+    border-color: #6F6F6F66;
+    border-style: solid;
+    position: relative;
+    transition: 0.1s ease-in;
+}
+
+.active-input-block {
+    border-color: #fff;
+
+}
+
+.invalid-input {
+    color: #e6282884;
+
+}
+
+input{
+    font-family: manrope;
+}
+
+.quick_add_input {
+    box-sizing: border-box;
+    min-width: 0px;
+    padding-left: 16px;
+    font-size: 40px;
+    font-weight: bold;
+    color: #FFFFFFCC;
+    background: none;
+    border: none;
+    width: auto;
+    border-radius: 10px;
+    caret-color: transparent;
+}
+
+.quick_add_input::placeholder {
+    color:#FFFFFF33
+}
+
+.quick_add_input:focus-visible {
+    outline: none;
+    border: none;
+    box-shadow: none;
+}
+
+
+.currency_select {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 24px;
+    padding: 20px;
+    background-color: #A8A8A833;
+    color: #FFFFFFCC;
+    border: none;
+    border-radius: 0px 8px 8px 0px;
+}
+
+button {
+    font-family: manrope;
+}
+
+.category-select {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    list-style: none;
+    padding: 0;
+    margin-top: 20px;
+    opacity: 100%;
+    transition: opacity 0.2s ease-in;
+}
+
+.category-select li {
+    background-color: #0C282A66;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    gap: 18px;
+
+}
+
+.inactive-category {
+    opacity: 50%;
+    pointer-events: none;
+    transition: opacity 0.2s ease-in;
+}
+
+
+.category p {
+    line-height: 0%;
+    font-size: 10px;
+    font-weight: bold;
+}
+
+.category image {
+    width: 24px;
+    height: 24px;
+}
+
+.historyDayGroup {
+    padding: 32px 10px 32px 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+.historyList{
+    list-style: none;
+    padding: 0;
+    margin-top: 20px;
+}
+
+.historyDay{
+    width: 100%;
+}
+
+.historyDayTitleGroup {
+    display: flex;
+    align-items: bottom;
+    gap: 4px;
+}
+
+.historyDayTitleDate {
+    font-size: 24px;
+    font-weight: bold;
+    letter-spacing: -0.05em;
+    line-height: 0.75em;
+    margin: 0px;
+}
+
+.historyDayTitleSum {
+    font-size: 19px;
+    font-weight: bold;
+    letter-spacing: -0.05em;
+    line-height: 1em;
+    color: #42DDE6;
+    margin: 0px;
+}
+
+.historyDayGroup > .budget_convert {
+    margin: 0px;
+    margin-top: 10px;
+}
+
+.historyDayGroup > .budget_convert > li {
+    font-weight: 400;
+    color: #C9C9C9;
+    font-size: 12px;
+}
+
+.historyDayGroup > .budget_convert > li:first-child {
+    padding-left: 0px;
+}
+
+.historyDayCostList {
+    list-style: none;
+    margin-left: 0px;
+    padding: 0px;
+    margin-top: 20px;
+    
+}
+
+.historyDayCost {
+    display: flex;
+    width: 100%;
+}
+
+.historyDayCostGroup{
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    min-height: 44px;
+}
+
+.costleft {
+    display: flex; 
+    align-items: center;
+    gap: 8px;
+
+}
+
+.costleft > img {
+    width: 16px;
+    left: 16px;
+}
+
+.costleft > p {
+    font-size: 14px;
+    font-weight: bold;
+    letter-spacing: -0.05em;
+    color: #fff;
+
+}
+
+.costRight {
+    display: flex;
+    align-items: center;
+}
+
+.costRight > .budget_convert > li {
+    font-weight: 400;
+    color: #C9C9C9;
+    font-size: 12px;
+}
+
+.costAmount {
+    font-size: 14px;
+    font-weight: bold;
+    letter-spacing: -0.05em;
+    color: #fff;
+}
+
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+#float-menu {
+    padding: 16px 32px 16px 32px;
+    background-color: #42dee609;
+    backdrop-filter: blur(20px);
+    box-shadow: 1px 4px 30px 0px #032b2e15;
+    border-radius: 16px;
+    margin-bottom: 16px;
+    position: fixed;
+    display: flex;
+    justify-self: center;
+    bottom: 0px;
+}
+
+.navigation {
+    display: flex;
+    list-style: none;
+    gap: 32px; 
+    padding: 0px;
+    margin: 0px;
+}
+
+.navigation {
+    padding: 0px;
+}
+
