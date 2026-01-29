@@ -7,8 +7,12 @@
   --bg-color: #1e1e1e;
   --font-family: 'Manrope';
   --font-color: white;
-  --bg-image: url(images/Vector.svg);
+  --bg-image: url(images/Background.svg);
   --grid-column-number: 4;
+  --border-width: 1px;
+  --border-radius-rounded: 10px;
+  --border-color-dropdown-menu: #FFFFFF33;
+  --dynamic-dropdown-menu-width: 100%;
 }
 
 * {
@@ -29,8 +33,8 @@ body {
 input {
   background: none;
   border-style: solid;
-  border-radius: 10px;
-  border-width: 1px;
+  border-radius: var(--border-radius-rounded);
+  border-width: var(--border-width);
   border-color: #6F6F6F66;
   font-family: inherit;
   color: inherit;
@@ -70,8 +74,79 @@ input[type="number"]::-webkit-outer-spin-button {
   font-size: 72px;
 }
 
-.budget-input input {
+.budget-input {
+  display: flex;
+  flex-direction: row;
   height: 60px;
+}
+
+#budget-input {
+  flex: 1;
+  min-width: 0;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  border-right-style: none;
+}
+
+.currency-select-wrapper {
+  display: flex;
+  position: relative;
+}
+
+.currency-select {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  background-color: #A8A8A833;
+  flex: 0 0 82px;
+  border-top-right-radius: var(--border-radius-rounded);
+  border-bottom-right-radius: var(--border-radius-rounded);
+}
+
+.currency-select > * {
+  pointer-events: none;
+  user-select: none;
+}
+
+.currency-select img {
+  width: 20px;
+  aspect-ratio: 1 / 1;
+}
+
+.currency-select span {
+  width: 15px;
+  font-size: 24px;
+}
+
+.currencies-menu {
+  display: none;
+  flex-direction: column;
+  position: absolute;
+  background-color: rgb(118,147,149);
+  border-style: solid;
+  border-color: var(--border-color-dropdown-menu);
+  border-radius: var(--border-radius-rounded);
+  border-width: var(--border-width);
+  z-index: 1;
+  width: var(--dynamic-dropdown-menu-width);
+  top: 115%;
+  right: 0;
+}
+
+.currency-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 8px 16px;
+}
+
+.currency-separator {
+  display: flex;
+  width: 100%;
+  height: 1px;
+  background-color: #FFFFFF33;
 }
 
 .categories-wrapper {
@@ -94,7 +169,7 @@ input[type="number"]::-webkit-outer-spin-button {
   display: flex;
   flex-direction: column;
   background-color: #0C282A66;
-  border-radius: 10px;
+  border-radius: var(--border-radius-rounded);
   justify-content: center;
   align-items: center;
   gap: 7px;
@@ -118,3 +193,4 @@ input[type="number"]::-webkit-outer-spin-button {
 .other-button {
   opacity: 80%;
 }
+
