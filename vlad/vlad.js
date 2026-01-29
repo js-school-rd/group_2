@@ -1,4 +1,13 @@
-if (localStorage.getItem('categories') == null) {
+function saveToStorage(key, value) {
+  localStorage.setItem(key, JSON.stringify(value));
+}
+
+function loadFromStorage(key) {
+  const data = localStorage.getItem(key);
+  return data ? JSON.parse(data) : null;
+}
+
+if (loadFromStorage('categories') == null) {
 const categoriesTemp = [
   { icon: 'assets/fi-rr-beer.svg',        title: 'Beer', id: 1 },
   { icon: 'assets/fi-rr-bike.svg',        title: 'Sport', id: 2},
@@ -9,23 +18,51 @@ const categoriesTemp = [
   { icon: 'assets/fi-rr-ice-cream.svg',   title: 'Dessert', id: 7}
 ];
 
-localStorage.setItem('categories', JSON.stringify(categoriesTemp))
+saveToStorage('categories', categoriesTemp)
 }
 
-if (localStorage.getItem('budget') == null) {
-  localStorage.setItem('budget', 5000)
+if (loadFromStorage('budget') == null) {
+  saveToStorage('budget', 5000)
 }
 
-let budget = localStorage.getItem('budget')
+let budget = loadFromStorage('budget')
 document.getElementById('budget').textContent = `${budget}$`  
 
-const categories = JSON.parse(localStorage.getItem('categories'))
-console.log(categories)
+const categories = loadFromStorage('categories')
 
-let costsList = JSON.parse(localStorage.getItem('costs'))
-console.log(costsList)
+function Cost(categoryId, amount, datetime) {
+  this.categoryId = categoryId
+  this.amount = amount
+  this.datetime = datetime.toISOString()
+}
 
-if (JSON.parse(localStorage.getItem('costs')) == null) {
+function getTimeFromISO(date) {
+  return new Date(date).toISOString().slice(11, 16);
+}
+
+function getDateKey(date) {
+  return new Date(date).toISOString().slice(0, 10);
+}
+
+function getLocalTime(date) {
+  return new Date(date).toLocaleTimeString().slice(0, 5);
+}
+
+function getLocalDate(date) {
+  return new Date(date).toLocaleDateString()
+}
+
+function getLocalDateUI(date) {
+  return new Date(date).toLocaleDateString('en-US', {
+        day: "2-digit",
+        month: 'short'
+      }
+    )
+}
+
+let costsList = loadFromStorage('costs')
+
+if (loadFromStorage('costs') == null) {
   let costsList = []
 }
 
@@ -52,8 +89,10 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   const liOther = document.createElement('li')
-  liOther.className = 'category'
-  liOther.innerHTML = `<p class=''>Other</p>`
+  liOther.classList.add('category')
+  const p = document.createElement('p');
+  p.textContent = 'Other';
+  liOther.appendChild(p);
   liOther.setAttribute('data-categoryId', 9999)
 
   categoryList.append(liOther)
@@ -65,23 +104,14 @@ const historyList = document.querySelector('[data-js-history-list]')
 const dayCostList = document.querySelector('[data-js-day-cost-list]')
 const historyDayCostTemplate = document.getElementById('historyDayCostTemplate')
 
-
-function Cost(categoryId, amount, datetime) {
-  this.categoryId = categoryId
-  this.amount = amount
-  this.datetime = datetime.toISOString()
-}
-
 function renderCost(targetList, cost) {
   const newCost = historyDayCostTemplate.content.cloneNode(true)
-  const costTime = cost.datetime.split('T')[1].slice(0, 5);
+  const costTime = getLocalTime(cost.datetime)
   const costLeft = newCost.querySelector('.costleft')
   const costRight = newCost.querySelector('.costRight')
   const costCategory = categories.filter(item => item.id == cost.categoryId)
 
   costLeft.querySelector('p').textContent = costTime
-  console.log(costCategory)
-  console.log(costCategory.icon)
   if (cost.categoryId != 9999) {
   costLeft.querySelector('img').src = costCategory[0].icon
   }
@@ -107,17 +137,11 @@ function renderDaysList(){
       );
       let daySum = 0
       costsInDay.forEach(item => daySum += Number(item.amount))
-      const dateISO = new Date(item)
       newDay.querySelector('.historyDayTitleSum').textContent = `${daySum}$`
       newDay.querySelector('.historyDayTitleDate')
-      .textContent =dateISO.toLocaleDateString('en-US', {
-        day: "2-digit",
-        month: 'short'
-      }
-      )
+      .textContent = getLocalDateUI(item)
       
       const targetList = newDay.querySelector('.historyDayCostList')
-      console.log(targetList)
       costsInDay.forEach(function(cost) {
         renderCost(targetList, cost)
       }
@@ -130,10 +154,9 @@ function renderDaysList(){
 
 function addCost(categoryId, amount, datetime) {
   if (+budget < +amount) {
-    alert('не деризи')
+    alert('не дерзи')
   } else {
   newCost = new Cost(categoryId, amount, datetime)
-  console.log(newCost)
   budget = budget - amount
   budgetDisplay.textContent = `${budget}$`
   if (costsList == null) {
@@ -142,8 +165,8 @@ function addCost(categoryId, amount, datetime) {
   else {
     costsList.unshift(newCost)
   }
-  localStorage.setItem('costs', JSON.stringify(costsList))
-  localStorage.setItem('budget', budget)
+  saveToStorage('costs', costsList)
+  saveToStorage('budget', budget)
 
   renderDaysList()
   }
@@ -175,12 +198,14 @@ if (costsList != null) {
 const budgetInputBlock = document.querySelector('.quick_add_input_block')
 
 budgetInput.addEventListener('input', (e) => {
-  if (budgetInput.value > 0 && Number(budgetInput.value) <= +budget) {
+  const value = Number(budgetInput.value);
+  const maxBudget = Number(budget);
+  if (value > 0 && value <= maxBudget) {
   categoryList.classList.remove('inactive-category')
   budgetInputBlock.classList.add('active-input-block')
   budgetDisplay.classList.remove('invalid-text')
   }
-  else if (budgetInput.value > 0 && Number(budgetInput.value) > +budget) {
+  else if (value > 0 && value > maxBudget) {
     categoryList.classList.add('inactive-category')
     budgetDisplay.classList.add('invalid-text')
     
