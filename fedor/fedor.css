@@ -19,6 +19,11 @@
   box-sizing: border-box; 
 }
 
+html,
+body {
+  height: 100%;
+}
+
 body {
   display: flex;
   flex-direction: column;
@@ -28,6 +33,7 @@ body {
   font-weight: 700;
   color: var(--font-color);
   padding: 20px 5px;
+  overflow: auto;
 }
 
 input {
@@ -58,10 +64,12 @@ input[type="number"]::-webkit-outer-spin-button {
   display: flex;
   flex-direction: column;
   gap: 40px;
+  flex: 1;
+  min-height: 0;
 }
 
 .background {
-  position: absolute;
+  position: fixed;
   inset: 0;
   background-color: var(--bg-color);
   background-image: var(--bg-image);
@@ -156,6 +164,8 @@ input[type="number"]::-webkit-outer-spin-button {
   padding: 16px;
   border-radius: 16px;
   gap: 20px;
+  flex-shrink: 1;
+  min-height: 0;
 }
 
 .categories {
@@ -194,3 +204,111 @@ input[type="number"]::-webkit-outer-spin-button {
   opacity: 80%;
 }
 
+.history-container {
+  flex: 1;
+  min-height: 0;
+}
+
+.history-container,
+.date-entry,
+.date-and-sum-wrapper
+ {
+  display: flex;
+  flex-direction: column;
+}
+
+.history-container {
+  overflow: auto;
+}
+
+.date-entry {
+  padding: 32px 10px;
+  border-bottom: solid 1px #FFFFFF33;
+}
+
+.date-and-sum-span {
+  display: flex;
+  gap: 4px;
+}
+
+.date-span {
+  font-size: 24px;
+}
+
+.sum-span {
+  font-size: 19px;
+  color: #42DDE6;
+  align-self: center;
+}
+
+.other-currencies-span {
+  font-size: 12px;
+  font-weight: 400;
+  color: #C9C9C9;
+}
+
+.expense-entries-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.expense-entry,
+.time-and-category-container,
+.currencies-and-sum-container {
+  display: flex;
+  flex-direction: row;
+}
+
+.expense-entry {
+  justify-content: space-between;
+  padding: 10px 0px;
+}
+
+.time-and-category-container,
+.currencies-and-sum-container {
+  align-items: center;
+  gap: 6px;
+}
+
+.time-and-category-container img {
+  aspect-ratio: 1 / 1;
+  width: 16px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* WebKit (Chrome, Edge, Safari) */
+.history-container::-webkit-scrollbar {
+  width: 4px;
+}
+
+.history-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.history-container::-webkit-scrollbar-thumb {
+  background-color: rgba(12, 40, 42, 0.4);
+  border-radius: 999px;
+}
+
+/* Firefox */
+.history-container {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(12, 40, 42, 0.4) transparent;
+}
