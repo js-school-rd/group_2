@@ -11,10 +11,9 @@ body {
     padding: 0px;
     width: 100%;
     min-height: 100vh;
-    
-    
+    display: flex;
+    justify-content: center;
 }
-
 
 p {
     margin: 0px;
@@ -23,10 +22,10 @@ p {
 .main_content {
     position: relative;
     max-width: 400px;
-    justify-self: center;
     border-left: solid 1px #ffffff12;
     border-right: solid 1px #ffffff12;
     padding: 16px;
+    min-height: 100%;
 }
 
 #budget {
@@ -49,7 +48,7 @@ p {
   margin: 0;
 }
 
-.budget_convert li {
+.budget-convert-item {
     position: relative;
     padding-right: 8px;
     padding-left: 4px;
@@ -60,7 +59,13 @@ p {
     font-weight: bold;
 }
 
-.budget_convert li::after {
+.budget-convert-item-small {
+    font-weight: 400;
+    color: #C9C9C9;
+    font-size: 12px;
+}
+
+.budget-convert-item::after {
     content: '';
     position: absolute;
     right: 0%;
@@ -71,7 +76,7 @@ p {
     background-color: #FFFFFFCC;
 }
 
-.budget_convert li:last-child::after {
+.budget-convert-item:last-child::after {
     display:none;
 }
 
@@ -242,13 +247,7 @@ button {
     margin-top: 10px;
 }
 
-.historyDayGroup > .budget_convert > li {
-    font-weight: 400;
-    color: #C9C9C9;
-    font-size: 12px;
-}
-
-.historyDayGroup > .budget_convert > li:first-child {
+.budget-convert-item:first-child {
     padding-left: 0px;
 }
 
@@ -263,6 +262,24 @@ button {
 .historyDayCost {
     display: flex;
     width: 100%;
+}
+
+.historyDayCost:first-child {
+  overflow: hidden;
+  animation: growIn 300ms ease-out forwards;
+}
+
+@keyframes growIn {
+  from {
+    max-height: 0;
+    opacity: 0;
+    transform: scaleY(0.8);
+  }
+  to {
+    max-height: 44px;
+    opacity: 1;
+    transform: scaleY(1);
+  }
 }
 
 .historyDayCostGroup{
@@ -297,11 +314,6 @@ button {
     align-items: center;
 }
 
-.costRight > .budget_convert > li {
-    font-weight: 400;
-    color: #C9C9C9;
-    font-size: 12px;
-}
 
 .costAmount {
     font-size: 14px;
@@ -340,4 +352,3 @@ input[type=number]::-webkit-inner-spin-button {
 .navigation {
     padding: 0px;
 }
-
