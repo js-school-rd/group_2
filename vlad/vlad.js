@@ -7,6 +7,10 @@ function loadFromStorage(key) {
   return data ? JSON.parse(data) : null;
 }
 
+function addTransaction(tx) {
+  costsList.unshift(tx)
+}
+
 if (loadFromStorage('categories') == null) {
 const categoriesTemp = [
   { icon: 'assets/fi-rr-beer.svg',        title: 'Beer', id: 1 },
@@ -25,16 +29,12 @@ if (loadFromStorage('budget') == null) {
   saveToStorage('budget', 5000)
 }
 
+
 let budget = loadFromStorage('budget')
 document.getElementById('budget').textContent = `${budget}$`  
 
 const categories = loadFromStorage('categories')
 
-function Cost(categoryId, amount, datetime) {
-  this.categoryId = categoryId
-  this.amount = amount
-  this.datetime = datetime.toISOString()
-}
 
 function getTimeFromISO(date) {
   return new Date(date).toISOString().slice(11, 16);
@@ -60,11 +60,40 @@ function getLocalDateUI(date) {
     )
 }
 
-let costsList = loadFromStorage('costs')
-
-if (loadFromStorage('costs') == null) {
-  let costsList = []
+function Cost(categoryId, amount, datetime, meta) {
+  this.categoryId = categoryId
+  this.amount = amount
+  this.datetime = datetime
+  this.meta = meta 
 }
+Cost.prototype.format = function() {
+  const localTime = getLocalTime(this.datetime)
+  const dynamicString = `date: ${localTime}, amount: ${this.amount}, category: ${this.categoryId}`
+  return `cost details: ${dynamicString}`
+}
+
+Cost.prototype.toJSON = function() {
+return JSON.stringify({
+  categoryId: this.categoryId,
+  amount: this.amount,
+  datetime: this.datetime,
+  meta: this.meta
+})
+}
+
+let costsList = [] 
+if (loadFromStorage('costs') != null) {
+loadFromStorage('costs').forEach((item) => {
+const parseItem = JSON.parse(item)
+const itemDate = new Date (parseItem.datetime)
+cost = new Cost(parseItem.categoryId, parseItem.amount, itemDate)
+addTransaction(cost)
+}
+)
+} else {
+  saveToStorage('costs', [])
+}
+
 
 const otherSpan = 4 - (categories.length % 4)
 
@@ -133,7 +162,7 @@ function renderDaysList(){
       const dayTemplate = document.getElementById('historyDayTemplate')
       const newDay = dayTemplate.content.cloneNode(true)
       const costsInDay = costsList.filter(costitem =>
-      costitem.datetime.slice(0, 10) === item
+      getDateKey(costitem.datetime) === item
       );
       let daySum = 0
       costsInDay.forEach(item => daySum += Number(item.amount))
@@ -152,25 +181,43 @@ function renderDaysList(){
   )
 }
 
-function addCost(categoryId, amount, datetime) {
-  if (+budget < +amount) {
-    alert('не дерзи')
-  } else {
-  newCost = new Cost(categoryId, amount, datetime)
-  budget = budget - amount
-  budgetDisplay.textContent = `${budget}$`
-  if (costsList == null) {
-  costsList = [newCost]
-  }
-  else {
-    costsList.unshift(newCost)
-  }
-  saveToStorage('costs', costsList)
-  saveToStorage('budget', budget)
-
-  renderDaysList()
+const TransactionService = {
+  meta: {},
+  datetime: new Date().toISOString(),
+  createCost: function({amount, categoryID, meta}) {
+    if (amount > 0) {
+      const cost = new Cost(categoryID, amount, this.datetime, meta)
+      addTransaction(cost)
+      budget = budget - amount
+      budgetDisplay.textContent = `${budget}$`
+      saveToStorage('costs', costsList)
+      renderDaysList()
+    }
+    else {
+      throw new Error('Сумма должна быть больше нуля')
+    }
   }
 }
+
+// function addCost(categoryId, amount, datetime) {
+//   if (+budget < +amount) {
+//     alert('не дерзи')
+//   } else {
+//   newCost = new Cost(categoryId, amount, datetime)
+//   budget = budget - amount
+//   budgetDisplay.textContent = `${budget}$`
+//   if (costsList == null) {
+//   costsList = [newCost]
+//   }
+//   else {
+//     costsList.unshift(newCost)
+//   }
+//   saveToStorage('costs', costsList)
+//   saveToStorage('budget', budget)
+
+//   renderDaysList()
+//   }
+// }
 
 const budgetInput = document.querySelector('.quick_add_input')
 
@@ -182,13 +229,32 @@ function resetInputs() {
   categoryList.classList.add('inactive-category')
 }
 
+// categoryList.addEventListener('click', (e) => {
+//   const item = e.target.closest('.category')
+//   const categoryID = item.dataset.categoryid
+//   const amount = budgetInput.value
+//   const datetime = new Date ()
+//   addCost(categoryID, amount, datetime)
+//   resetInputs()
+// })
+
 categoryList.addEventListener('click', (e) => {
   const item = e.target.closest('.category')
   const categoryID = item.dataset.categoryid
   const amount = budgetInput.value
-  const datetime = new Date ()
-  addCost(categoryID, amount, datetime)
+  const data = {
+    amount: +amount,
+    categoryID: +categoryID
+  }
+  try {
+  TransactionService.createCost(data)
+  }
+  catch (err){
+    document.alert(err)
+  }
+  finally{
   resetInputs()
+  }
 })
 
 if (costsList != null) {
@@ -223,3 +289,49 @@ budgetInput.addEventListener('focus', (e) => {
 budgetInput.addEventListener('blur', (e) => {
   budgetInputBlock.classList.remove('active-input-block')
 })
+
+const screens = document.querySelectorAll('section')
+
+function changeScreen(screen, render) {
+  screens.forEach(item => {
+    if (item == screen) {
+      item.classList.remove('hide-section')
+    } else {
+      item.classList.add('hide-section')
+    }
+  }
+  )
+}
+
+const historySection = {
+show: function() {
+  const section = document.getElementById('historyScreen')
+  changeScreen(section)
+},
+hide: function() {
+  const section = document.getElementById('main')
+  changeScreen(section)
+},
+render: function() {
+  const historyList = document.getElementById('history-screen-list')
+  historyList.replaceChildren();
+  costsList.forEach(item => {
+   itemData = item.format()
+   const newLi = document.createElement('li')
+   newLi.classList.add('historyDayCost')
+   newLi.textContent = itemData
+   historyList.append(newLi)
+  })
+}
+}
+
+const navbar = document.getElementById('float-menu')
+navbar.addEventListener('click', (e) => {
+  const section = e.target.closest('li')
+  targetSection = document.getElementById(section.dataset.jsSection)
+  changeScreen(targetSection)
+  if (targetSection.id == 'historyScreen') {
+    historySection.render()
+  }
+}) 
+

@@ -10,6 +10,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap" rel="stylesheet">
 </head>
 <body>
+<section id="main">
 <div class="main_content">
     <h1 id="budget">6000$</h1>
     <ul class="budget_convert">
@@ -70,14 +71,19 @@
     </div>
     
 </div>
+</section>
+<section id="historyScreen" class="hide-section main_content">
+    <ul class="historyDayCostList" id="history-screen-list">
+    </ul>
+</section>
 <nav id="float-menu">
     <ul class="navigation">
-        <li><a><img src="assets/menu/fi-rr-home.svg" alt="Home page"></a></li>
-        <li><a><img src="assets/menu/fi-rr-stats.svg" alt="Your statistics"></a></li>
-        <li><a><img src="assets/menu/fi-rr-settings.svg" alt="Settings"></a></li>
-        <li><a><img src="assets/menu/fi-rr-add.svg" alt="Add action"></a></li>
+        <li id="menu-home" data-js-section="main"><a><img src="assets/menu/fi-rr-home.svg" alt="Home page"></a></li>
+        <li id="menu-stat"><a><img src="assets/menu/fi-rr-stats.svg" alt="Your statistics"></a></li>
+        <li id="menu-settings"><a><img src="assets/menu/fi-rr-settings.svg" alt="Settings"></a></li>
+        <li id="menu-add"><a><img src="assets/menu/fi-rr-add.svg" alt="Add action"></a></li>
+        <li id="menu-history" data-js-section="historyScreen"><a><img src="assets/menu/fi-rr-calendar.svg" alt="History"></a></li>
     </ul>
-
 </nav>
     <script src="vlad.js"></script>
 </body>
