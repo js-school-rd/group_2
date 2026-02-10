@@ -11,16 +11,39 @@ class Currency {
   }
 }
 
-class Expense {
-  constructor(category, amount, currency, date) {
-    this.category = category;
-    this.amount = amount;
-    this.currency = currency;
-    this.date = date;
+function Transaction(category, amount, currency, date = new Date()) {
+  this.category = category;
+  this.amount = amount;
+  this.currency = currency;
+  this.date = date;
+}
+
+Transaction.prototype.toJSON = function () {
+  const obj = {};
+  for (key in this) {
+    obj[key] = this[key];
+  }
+  return obj;
+}
+Transaction.prototype.convertToString = function () {
+  return `category: ${this.category.name}, amount: ${this.amount / 1000}, date: ${dateToString(new Date(this.date))}`;
+}
+
+class TransactionService {
+  static createExpense({ amount, category, currency, meta = {} }) {
+    if (!Number.isFinite(amount)) {
+      throw new Error('Not a number');
+    }
+
+    if (amount <= 0) {
+      throw new Error('Invalid amount');
+    }
+
+    return new Transaction(category, amount, currency)
   }
 
-  static fromJSON(obj) {
-    return new Expense(obj.category, obj.amount, obj.currency, obj.date)
+  static fromJSON = function (obj) {
+    return new Transaction(obj.category, obj.amount, obj.currency, obj.date);
   }
 }
 
@@ -55,16 +78,16 @@ const currencies = getFromLocalStorage('currencies', [
   new Currency('Kazahstan Tenge', '₸', 'images/KZT.svg', 503)
 ], Currency);
 
-const expenses = getFromLocalStorage('expenses', [], Expense);
+const transactions = getFromLocalStorage('expenses', [], Transaction);
 
 let initialBudget = getFromLocalStorage('initialBudget', 6000000);
 
-let uniqueDates = getUniqueDates(expenses);
+let uniqueDates = getUniqueDates(transactions);
 
 
 
 
-const contentContainer = document.querySelector('.content');
+const contentContainer = document.querySelector('.home-screen');
 
 document.addEventListener('DOMContentLoaded', () => {
   const el = document.querySelector('.categories-wrapper');
@@ -72,13 +95,38 @@ document.addEventListener('DOMContentLoaded', () => {
   const width = parseFloat(style.width) - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight);
   document.documentElement.style.setProperty('--dynamic-dropdown-menu-width', width + 'px');
 
-});
+  const homeScreen = document.querySelector('.home-screen');
+  showScreen(homeScreen)
+  const menuButtons = document.querySelectorAll('.menu > *');
 
-if (uniqueDates.length > 0) {
-  const historyContainer = document.createElement('div');
-  historyContainer.className = 'history-container';
-  contentContainer.append(historyContainer);
-}
+  menuButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      switch (button.className) {
+        case 'home-button': {
+          const screen = document.querySelector('.home-screen');
+          showScreen(screen);
+          break;
+        };
+        case 'stats-button': {
+          const screen = document.querySelector('.stats-screen');
+          showScreen(screen);
+          break;
+        };
+        case 'settings-button': {
+          const screen = document.querySelector('.settings-screen');
+          showScreen(screen);
+          break;
+        };
+        case 'add-button': {
+          const screen = document.querySelector('.history-screen');
+          showScreen(screen);
+          render(transactions);
+          break;
+        };
+      }
+    })
+  })
+});
 
 
 
@@ -114,7 +162,7 @@ currencies.forEach((item, index, array) => {
 let currency = currencies[0];
 
 const uniqueExpenses = uniqueDates.map(date =>
-  expenses.find(expense => {
+  transactions.find(expense => {
     return dateToString(new Date(expense.date)) === dateToString(new Date(date));
   })
 )
@@ -151,6 +199,15 @@ currenciesMenuToggler.addEventListener('click', () => {
 
 
 
+function showScreen(targetScreen) {
+  const allScreens = [...document.querySelectorAll('.screen')];
+  const screenIndex = allScreens.indexOf(targetScreen);
+  allScreens.splice(screenIndex, 1);
+
+  allScreens.forEach(screen => screen.style.display = 'none');
+  targetScreen.style.display = 'flex';
+}
+
 function toggleElement(el, initialDisplay) {
   el.style.display === 'none' ? el.style.display = initialDisplay : el.style.display = 'none';
 }
@@ -172,52 +229,39 @@ function addCategoryCard(name, image, id) {
   categoriesContainer.insertBefore(card, otherButton);
 }
 
-function addExpense(expense, budget) {
-  if (budget < expense.amount) {
-    alert('Budget exceeded');
-    throw console.error('Budget exceeded');
-  }
-
-  initialBudget -= expense.amount;
-
-  expenses.push(expense);
-  uniqueDates = getUniqueDates(expenses);
-
-  saveToLocalStorage('expenses', expenses);
-
-  saveToLocalStorage('initialBudget', initialBudget);
-
-  updateElementText(document.querySelector('.budget span'),
-    (initialBudget / 1000) + expense.currency.symbol);
-
-  addOrUpdateHistoryEntryHTML(expense, uniqueDates.length - 1);
-}
-
 function updateElementText(el, text) {
   el.textContent = text;
 }
 
 function onCategoryClick(id) {
-  let category = 'Other';
-  if (id) {
-    category = categories.find(item => item.id == id);
-  }
-
   const budgetInput = document.querySelector("#budget-input");
-  const value = Number(budgetInput.value) * 1000;
-  if (value <= 0) {
-    alert('Incorrect value');
-    return;
+  try {
+    let category = 'Other';
+    if (id) {
+      category = categories.find(item => item.id == id);
+    }
+
+    const value = Number(budgetInput.value) * 1000;
+
+    const newTransaction = TransactionService.createExpense({ category, amount: value, currency });
+
+    initialBudget -= newTransaction.amount;
+    saveToLocalStorage('initialBudget', initialBudget);
+    updateElementText(document.querySelector('.budget span'),
+      (initialBudget / 1000) + newTransaction.currency.symbol);
+
+    addTransaction(newTransaction);
+    addOrUpdateHistoryEntryHTML(newTransaction, uniqueDates.length - 1);
+  } catch (error) {
+    alert(error.message)
+  } finally {
+    budgetInput.value = null;
   }
-
-  addExpense(new Expense(category, value, currency, Date.now()), initialBudget)
-
-  budgetInput.value = null;
 }
 
-function getUniqueDates(expenses) {
+function getUniqueDates(transactions) {
   const uniqueDates = [];
-  expenses.forEach(item => {
+  transactions.forEach(item => {
     const date = new Date(item.date);
     const formattedDateString = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
     if (!uniqueDates.includes(formattedDateString)) { uniqueDates.push(formattedDateString); }
@@ -246,11 +290,11 @@ function getFromLocalStorage(key, defaultValue, Class = null) {
 
     if (Class) {
       if (Array.isArray(parsed)) {
-        return parsed.map(item => { return Class.fromJSON(item) })
+        return parsed.map(item => { return Class === Transaction ? new TransactionService.fromJSON(item) : new Class().fromJSON(item) })
       }
 
       if (parsed && typeof parsed === 'object') {
-        return Class.fromJSON(parsed);
+        return Class === Transaction ? new TransactionService.fromJSON(parsed) : new Class().fromJSON(parsed);
       }
     }
 
@@ -268,13 +312,13 @@ function removeFromLocalStorage(key) {
   localStorage.removeItem(key);
 }
 
-function addOrUpdateHistoryEntryHTML(expense, index) {
-  const dateObj = new Date(expense.date);
+function addOrUpdateHistoryEntryHTML(Transaction, index) {
+  const dateObj = new Date(Transaction.date);
   const dateString = dateToString(dateObj);
 
-  const isEntryExist = Boolean(expenses.find((item) => dateToString(new Date(item.date)) === dateString));
+  const isEntryExist = Boolean(transactions.find((item) => dateToString(new Date(item.date)) === dateString));
 
-  const expensesForThisDate = expenses.filter(item => dateString === dateToString(new Date(item.date)))
+  const expensesForThisDate = transactions.filter(item => dateString === dateToString(new Date(item.date)))
   const expensesSum = expensesForThisDate.reduce((sum, item) => { return sum += item.amount }, 0);
 
   const otherCurrencies = getOtherCurrencies(currency, currencies);
@@ -282,7 +326,14 @@ function addOrUpdateHistoryEntryHTML(expense, index) {
   const sumSpan = document.querySelectorAll('.sum-span')[index];
   const sumForThisDateText = expensesSum / 1000 + currency.symbol;
 
-  const historyContainer = document.querySelector('.history-container');
+  let historyContainer = document.querySelector('.history-container');
+  if (!historyContainer) {
+    historyContainer = document.createElement('div');
+    historyContainer.className = 'history-container';
+  }
+  contentContainer.append(historyContainer);
+
+
   if (!isEntryExist || !sumSpan) {
     const dateContainer = document.createElement('div');
     dateContainer.className = 'date-entry';
@@ -313,17 +364,17 @@ function addOrUpdateHistoryEntryHTML(expense, index) {
     expenseEntriesContainer.className = 'expense-entries-container';
 
     expensesForThisDate.forEach(expense => {
-      expenseEntriesContainer.append(constructEntry(expense));
+      expenseEntriesContainer.prepend(constructEntry(expense));
     });
     dateContainer.append(dateAndSumWrapper, expenseEntriesContainer);
 
-    historyContainer.append(dateContainer);
+    historyContainer.prepend(dateContainer);
   }
   else {
     sumSpan.textContent = sumForThisDateText;
     const allExpenseEntriesContainers = document.querySelectorAll('.expense-entries-container');
-    const lastExpenseEntriesContainer = allExpenseEntriesContainers[allExpenseEntriesContainers.length - 1];
-    lastExpenseEntriesContainer.append(constructEntry(expense));
+    const lastExpenseEntriesContainer = allExpenseEntriesContainers[0];
+    lastExpenseEntriesContainer.prepend(constructEntry(Transaction));
   }
 }
 
@@ -342,6 +393,11 @@ function getOtherCurrencies(currency, currencies) {
   const otherCurrencies = currencies.slice();
   otherCurrencies.splice(currentCurrencyIndex, 1);
   return otherCurrencies;
+}
+
+function addTransaction(Transaction) {
+  transactions.push(Transaction);
+  saveToLocalStorage('expenses', transactions);
 }
 
 function constructEntry(expense) {
@@ -370,4 +426,18 @@ function constructEntry(expense) {
   expenseEntry.append(timeAndCategoryContainer, currenciesAndSumContainer);
 
   return expenseEntry;
+}
+
+function render(transactions) {
+  const historyContainer = document.createElement('div');
+  historyContainer.className = 'history-container';
+
+  transactions.forEach(item => {
+    const span = document.createElement('span');
+    span.textContent = item.convertToString();
+    historyContainer.append(span);
+  });
+
+  const historyScreen = document.querySelector('.history-screen');
+  historyScreen.append(historyContainer);
 }

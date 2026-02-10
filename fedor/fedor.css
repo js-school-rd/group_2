@@ -15,6 +15,10 @@
   --dynamic-dropdown-menu-width: 100%;
 }
 
+.hidden {
+  display: none;
+}
+
 * {
   box-sizing: border-box; 
 }
@@ -66,6 +70,14 @@ input[type="number"]::-webkit-outer-spin-button {
   gap: 40px;
   flex: 1;
   min-height: 0;
+}
+
+.screen {
+  display: none;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  gap: 20px;
 }
 
 .background {
@@ -273,6 +285,23 @@ input[type="number"]::-webkit-outer-spin-button {
 .time-and-category-container img {
   aspect-ratio: 1 / 1;
   width: 16px;
+}
+
+.menu {
+  display: flex;
+  flex-direction: row;
+  position: fixed;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(to right, #032B2E1A, #42DDE61A);
+  padding: 16px 32px;
+  gap: 32px;
+  border-radius: 16px;
+}
+
+.menu > img {
+  cursor: pointer;
 }
 
 
