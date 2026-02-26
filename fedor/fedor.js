@@ -152,7 +152,7 @@ currencies.forEach((item, index, array) => {
   const separator = document.createElement('div');
   separator.className = 'separator';
 
-  if (index != array.length - 1) {
+  if (index !== array.length - 1) {
     menu.append(container, separator);
   } else {
     menu.append(container);
@@ -238,7 +238,7 @@ function onCategoryClick(id) {
   try {
     let category = 'Other';
     if (id) {
-      category = categories.find(item => item.id == id);
+      category = categories.find(item => item.id === id);
     }
 
     const value = Number(budgetInput.value) * 1000;
