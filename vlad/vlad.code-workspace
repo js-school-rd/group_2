@@ -1,0 +1,15 @@
+{
+	"folders": [
+		{
+			"name": "vlad",
+			"path": "."
+		},
+		{
+			"name": "assets",
+			"path": "../../../budget project/assets"
+		}
+	],
+	"settings": {
+		"liveServer.settings.multiRootWorkspaceName": "vlad"
+	}
+}
